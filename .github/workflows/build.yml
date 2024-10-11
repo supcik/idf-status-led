@@ -1,0 +1,28 @@
+name: build examples
+
+on:
+  pull_request:
+  push:
+    tags: ['*']
+
+jobs:
+  check-and-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [esp32s3]
+        esp_idf_version: [v5.3.1]
+        path: ['.', examples/get_started]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: esp-idf build
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: ${{ matrix.esp_idf_version }}
+          target: ${{ matrix.target }}
+          path: ${{ matrix.path }}
+          command: 'idf.py build size'

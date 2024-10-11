@@ -1,0 +1,40 @@
+menu "Status LED"
+config STATUS_LED_PIN
+    int "Status LED pin"
+    default 48
+    help
+        The pin number of the status LED. This is the pin that the
+        status LED is connected to. The status LED is used to indicate
+        the status of the device. For example, it can be used to
+        indicate that the device is connected to the network.
+
+choice STATUS_LED_MODE
+    prompt "Status LED mode"
+    default STATUS_LED_MODE_WS2812
+    help
+        The mode of the status LED. The status LED can be turned off,
+        turned on, or blink at a certain rate.
+    config STATUS_LED_MODE_WS2812
+        bool "WS2811"
+        help
+            Use the WS2812 protocol to control the status LED. This
+            allows the status LED to display different colors.
+    config STATUS_LED_MODE_GPIO
+        bool "GPIO"
+        help
+            Use a GPIO pin to control the status LED. This allows the
+            status LED to be turned on or off.
+endchoice
+
+config STATUS_LED_GPIO_INVERT
+    bool "Invert status LED GPIO"
+    help
+        Invert the status LED GPIO. This is useful for some hardware
+        where the status LED is active low.
+
+config STATUS_LED_SWAP_RED_GREEN
+    bool "Swap red and green color LEDs"
+    help
+        Swap the red and green color LEDs. This is useful for some
+        hardware where the red and green LEDs are swapped.
+endmenu

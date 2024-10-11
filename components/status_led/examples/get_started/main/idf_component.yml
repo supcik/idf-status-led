@@ -1,0 +1,3 @@
+dependencies:
+  status_led:
+    override_path: "../../../"
