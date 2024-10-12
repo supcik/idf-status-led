@@ -1,4 +1,4 @@
-version: 1.0.2
+version: 1.0.3
 maintainers:
   - Jacques Supcik <jacques@supcik.net>
 description: Driver for Status LED
