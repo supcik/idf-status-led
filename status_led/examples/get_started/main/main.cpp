@@ -19,6 +19,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "status_led.hpp"
+#include "status_led/led_device.hpp"
 
 extern "C" {
 void app_main(void);
@@ -45,7 +46,21 @@ void PrintStat() {
 
 void app_main(void) {
     ESP_LOGI(kTag, "Starting StatusLed test");
-    StatusLed led;
+#if defined(CONFIG_STATUS_LED_MODE_WS2812)
+#if defined(CONFIG_STATUS_LED_SWAP_RED_GREEN)
+    status_led::LedDevice* led_device = new status_led::Ws2812Led(CONFIG_STATUS_LED_PIN, true);
+#else
+    status_led::LedDevice* led_device = new status_led::Ws2812Led(CONFIG_STATUS_LED_PIN, false);
+#endif
+#else
+#if defined(CONFIG_STATUS_LED_INVERSE)
+    status_led::Led* led_device = new status_led::GpioLed(CONFIG_STATUS_LED_PIN, true);
+#else
+    status_led::Led* led_device = new status_led::GpioLed(CONFIG_STATUS_LED_PIN, false);
+#endif
+#endif
+
+    StatusLed led(led_device);
     while (true) {
         led.On(kGreen, 8);
         vTaskDelay(pdMS_TO_TICKS(2000));
