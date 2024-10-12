@@ -3,11 +3,21 @@ name: build examples
 on:
   pull_request:
   push:
-    tags: ['*']
 
 jobs:
-  check-and-build:
+  pre-commit:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: pre-commit/action@v3.0.0
+
+  build:
+    runs-on: ubuntu-latest
+    needs: pre-commit
+    if: startsWith(github.event.ref, 'refs/tags/v')
     strategy:
       matrix:
         target: [esp32s3]
@@ -26,3 +36,18 @@ jobs:
           target: ${{ matrix.target }}
           path: ${{ matrix.path }}
           command: 'idf.py build size'
+
+  upload_components:
+    runs-on: ubuntu-latest
+    needs: build
+    if: startsWith(github.event.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload component to the component registry
+        uses: espressif/upload-components-ci-action@v1
+        with:
+          name: 'status_led'
+          version: ${{ github.ref_name }}
+          namespace: 'supcik'
+          api_token: ${{ secrets.IDF_COMPONENT_API_TOKEN }}
+          directories: status_led
