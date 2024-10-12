@@ -12,7 +12,7 @@ jobs:
       matrix:
         target: [esp32s3]
         esp_idf_version: [v5.3.1]
-        path: [examples/get_started]
+        path: [status_led/examples/get_started]
 
     steps:
       - uses: actions/checkout@v4
