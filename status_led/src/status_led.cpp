@@ -110,7 +110,10 @@ void StatusLed::Task() {
     bool is_on = false;
 
     while (true) {
-        LedCommand prevCmd = cmd;
+        LedCommand prevCmd;
+        if (cmd.cmd != kFlash) {  // Don't save flash commands
+            prevCmd = cmd;
+        }
         BaseType_t res = xQueueReceive(queue_, &cmd, delay);
         bool newMessage = res == pdTRUE;
         if (newMessage) {
