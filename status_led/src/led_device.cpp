@@ -57,9 +57,10 @@ Ws2812Led::Ws2812Led(int pin, bool swap_red_green)
     /* LED strip initialization with the GPIO and pixels number*/
     led_strip_config_t stripConfig = {};
     stripConfig.strip_gpio_num = pin;
-    stripConfig.max_leds = 1;                             // The number of LEDs in the strip,
-    stripConfig.led_pixel_format = LED_PIXEL_FORMAT_GRB;  // Pixel format of your LED strip
-    stripConfig.led_model = LED_MODEL_WS2812;             // LED strip model
+    stripConfig.max_leds = 1;  // The number of LEDs in the strip,
+    stripConfig.color_component_format =
+        LED_STRIP_COLOR_COMPONENT_FMT_GRB;     // Pixel format of your LED strip
+    stripConfig.led_model = LED_MODEL_WS2812;  // LED strip model
 
     led_strip_rmt_config_t rmtConfig = {};
 
