@@ -50,7 +50,8 @@ void app_main(void) {
 #if defined(CONFIG_STATUS_LED_SWAP_RED_GREEN)
     status_led::LedDevice* led_device = new status_led::Ws2812Led(CONFIG_STATUS_LED_PIN, true);
 #else
-    status_led::LedDevice* led_device = new status_led::Ws2812Led(CONFIG_STATUS_LED_PIN, false);
+    status_led::LedDevice* led_device =
+        new status_led::Ws2812Led(CONFIG_STATUS_LED_PIN, LED_STRIP_COLOR_COMPONENT_FMT_RGB);
 #endif
 #else
 #if defined(CONFIG_STATUS_LED_INVERSE)
@@ -62,17 +63,17 @@ void app_main(void) {
 
     StatusLed led(led_device);
     while (true) {
-        led.On(kGreen, 8);
+        led.On(StatusLed::kGreen, 8);
         vTaskDelay(pdMS_TO_TICKS(2000));
-        led.Blink(50, 450, kBlue, 32);
+        led.Blink(50, 450, StatusLed::kBlue, 32);
         vTaskDelay(pdMS_TO_TICKS(2000));
-        led.On(kOrange, 8);
+        led.On(StatusLed::kOrange, 8);
         vTaskDelay(pdMS_TO_TICKS(1000));
-        led.Flash(50, 200, 3, kWhite, 32);
+        led.Flash(50, 200, 3, StatusLed::kWhite, 32);
         vTaskDelay(pdMS_TO_TICKS(3000));
-        led.Blink(50, 50, kWhite, 32);
+        led.Blink(50, 50, StatusLed::kWhite, 32);
         vTaskDelay(pdMS_TO_TICKS(1000));
-        led.Flash(50, 200, 3, kRed, 32);
+        led.Flash(50, 200, 3, StatusLed::kRed, 32);
         vTaskDelay(pdMS_TO_TICKS(3000));
         PrintStat();
     }

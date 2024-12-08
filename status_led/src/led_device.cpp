@@ -52,14 +52,13 @@ void GpioLed::Off() {
     }
 }
 
-Ws2812Led::Ws2812Led(int pin, bool swap_red_green)
-    : LedDevice(pin), swap_red_green_(swap_red_green) {
+Ws2812Led::Ws2812Led(int pin, led_color_component_format_t color_component_format)
+    : LedDevice(pin) {
     /* LED strip initialization with the GPIO and pixels number*/
     led_strip_config_t stripConfig = {};
     stripConfig.strip_gpio_num = pin;
     stripConfig.max_leds = 1;  // The number of LEDs in the strip,
-    stripConfig.color_component_format =
-        LED_STRIP_COLOR_COMPONENT_FMT_GRB;     // Pixel format of your LED strip
+    stripConfig.color_component_format = color_component_format;
     stripConfig.led_model = LED_MODEL_WS2812;  // LED strip model
 
     led_strip_rmt_config_t rmtConfig = {};
@@ -77,11 +76,7 @@ Ws2812Led::~Ws2812Led() {
 }
 
 void Ws2812Led::On(uint8_t r, uint8_t g, uint8_t b) {
-    if (swap_red_green_) {
-        led_strip_set_pixel(ledStrip_, 0, g, r, b);
-    } else {
-        led_strip_set_pixel(ledStrip_, 0, r, g, b);
-    }
+    led_strip_set_pixel(ledStrip_, 0, r, g, b);
     led_strip_refresh(ledStrip_);
 }
 

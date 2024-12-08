@@ -42,14 +42,7 @@ class LedColor {
     uint8_t b_;
 };
 
-const LedColor kRed(255, 0, 0);
-const LedColor kOrange(255, 32, 0);
-const LedColor kGreen(0, 255, 0);
-const LedColor kBlue(0, 0, 255);
-const LedColor kWhite(255, 255, 255);
-
-const LedColor kDefaultColor = kBlue;
-const int kDefaultBrightness = 32;
+static const int kDefaultBrightness = 32;
 
 /**
  * @brief StatusLed class
@@ -66,6 +59,14 @@ class StatusLed {
      * @brief Destroy the StatusLed object
      */
     ~StatusLed();
+
+    static const LedColor kRed;
+    static const LedColor kOrange;
+    static const LedColor kGreen;
+    static const LedColor kBlue;
+    static const LedColor kWhite;
+
+    static const LedColor kDefaultColor;
 
     void Off();
     void On(LedColor color = kDefaultColor, int brightness = kDefaultBrightness);

@@ -44,13 +44,12 @@ class GpioLed : public LedDevice {
 
 class Ws2812Led : public LedDevice {
    public:
-    Ws2812Led(int pin, bool swap_red_green = false);
+    Ws2812Led(int pin, led_color_component_format_t color_component_format);
     ~Ws2812Led() override;
     void On(uint8_t r, uint8_t g, uint8_t b) override;
     void Off() override;
 
    private:
-    bool swap_red_green_;
     static const int kRmtResolution;
     led_strip_handle_t ledStrip_;
 };
