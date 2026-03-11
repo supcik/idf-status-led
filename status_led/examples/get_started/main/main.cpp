@@ -1,16 +1,10 @@
+// SPDX-FileCopyrightText: 2026 Jacques Supcik <jacques@supcik.net>
+//
+// SPDX-License-Identifier: MIT
+
 /**
- ******************************************************************************
- * @file        : main.cpp
- * @brief       : Simple test for Status Led
- * @author      : Jacques Supcik <jacques@supcik.net>
- * @date        : 11 March 2024
- ******************************************************************************
- * @copyright   : Copyright (c) 2024 Jacques Supcik
- * @attention   : SPDX-License-Identifier: MIT or Apache-2.0
- ******************************************************************************
- * @details
- *
- ******************************************************************************
+ * @file main.cpp
+ * @brief Example usage of the StatusLed component.
  */
 
 #include <inttypes.h>
@@ -48,16 +42,15 @@ void app_main(void) {
     ESP_LOGI(kTag, "Starting StatusLed test");
 #if defined(CONFIG_STATUS_LED_MODE_WS2812)
 #if defined(CONFIG_STATUS_LED_SWAP_RED_GREEN)
-    status_led::LedDevice* led_device = new status_led::Ws2812Led(CONFIG_STATUS_LED_PIN, true);
+    status_led::Ws2812Led led_device(CONFIG_STATUS_LED_PIN, true);
 #else
-    status_led::LedDevice* led_device =
-        new status_led::Ws2812Led(CONFIG_STATUS_LED_PIN, LED_STRIP_COLOR_COMPONENT_FMT_RGB);
+    status_led::Ws2812Led led_device(CONFIG_STATUS_LED_PIN, LED_STRIP_COLOR_COMPONENT_FMT_RGB);
 #endif
 #else
 #if defined(CONFIG_STATUS_LED_INVERSE)
-    status_led::Led* led_device = new status_led::GpioLed(CONFIG_STATUS_LED_PIN, true);
+    status_led::GpioLed led_device(CONFIG_STATUS_LED_PIN, true);
 #else
-    status_led::Led* led_device = new status_led::GpioLed(CONFIG_STATUS_LED_PIN, false);
+    status_led::GpioLed led_device(CONFIG_STATUS_LED_PIN, false);
 #endif
 #endif
 

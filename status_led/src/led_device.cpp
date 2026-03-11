@@ -1,17 +1,6 @@
-/**
- ******************************************************************************
- * @file        : led_device.cpp
- * @brief       : Led device for status LED
- * @author      : Jacques Supcik <jacques@supcik.net>
- * @date        : 2 October 2024
- ******************************************************************************
- * @copyright   : Copyright (c) 2024 Jacques Supcik
- * @attention   : SPDX-License-Identifier: MIT or Apache-2.0
- ******************************************************************************
- * @details
- *
- ******************************************************************************
- */
+// SPDX-FileCopyrightText: 2026 Jacques Supcik <jacques@supcik.net>
+//
+// SPDX-License-Identifier: MIT
 
 #include "status_led/led_device.hpp"
 
