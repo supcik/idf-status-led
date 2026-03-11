@@ -19,8 +19,3 @@ commit_args = ""
 setup_hooks = []
 pre_commit_hooks = []
 post_commit_hooks = []
-
-[[tool.bumpversion.files]]
-filename = "status_led/idf_component.yml"
-search = "version: {current_version}"
-replace = "version: {new_version}"
