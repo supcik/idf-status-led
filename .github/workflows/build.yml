@@ -11,7 +11,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
+      - name: Install doxygen
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen
       - uses: pre-commit/action@v3.0.0
 
   build:
@@ -27,14 +31,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
       - name: esp-idf build
         uses: espressif/esp-idf-ci-action@v1
         with:
           esp_idf_version: ${{ matrix.esp_idf_version }}
           target: ${{ matrix.target }}
           path: ${{ matrix.path }}
-          command: 'idf.py build size'
+          command: "idf.py build size"
 
   upload_components:
     runs-on: ubuntu-latest
@@ -45,8 +49,8 @@ jobs:
       - name: Upload component to the component registry
         uses: espressif/upload-components-ci-action@v1
         with:
-          name: 'status_led'
+          name: "status_led"
           version: ${{ github.ref_name }}
-          namespace: 'supcik'
+          namespace: "supcik"
           api_token: ${{ secrets.IDF_COMPONENT_API_TOKEN }}
           directories: status_led
