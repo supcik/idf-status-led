@@ -9,11 +9,14 @@
 
 #include <inttypes.h>
 
+#include <memory>
+
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "status_led.hpp"
-#include "status_led/led_device.hpp"
+#include "status_led/gpio_led_device.hpp"
+#include "status_led/ws2812_led_device.hpp"
 
 extern "C" {
 void app_main(void);
@@ -42,19 +45,21 @@ void app_main(void) {
     ESP_LOGI(kTag, "Starting StatusLed test");
 #if defined(CONFIG_STATUS_LED_MODE_WS2812)
 #if defined(CONFIG_STATUS_LED_SWAP_RED_GREEN)
-    status_led::Ws2812Led led_device(CONFIG_STATUS_LED_PIN, true);
+    auto led_device = std::make_unique<status_led::Ws2812Led>(
+        static_cast<gpio_num_t>(CONFIG_STATUS_LED_PIN), LED_STRIP_COLOR_COMPONENT_FMT_GRB);
 #else
-    status_led::Ws2812Led led_device(CONFIG_STATUS_LED_PIN, LED_STRIP_COLOR_COMPONENT_FMT_RGB);
+    auto led_device = std::make_unique<status_led::Ws2812Led>(
+        static_cast<gpio_num_t>(CONFIG_STATUS_LED_PIN), LED_STRIP_COLOR_COMPONENT_FMT_RGB);
 #endif
 #else
 #if defined(CONFIG_STATUS_LED_INVERSE)
-    status_led::GpioLed led_device(CONFIG_STATUS_LED_PIN, true);
+    auto led_device = std::make_unique<status_led::GpioLed>(CONFIG_STATUS_LED_PIN, true);
 #else
-    status_led::GpioLed led_device(CONFIG_STATUS_LED_PIN, false);
+    auto led_device = std::make_unique<status_led::GpioLed>(CONFIG_STATUS_LED_PIN, false);
 #endif
 #endif
 
-    StatusLed led(led_device);
+    StatusLed led(std::move(led_device));
     while (true) {
         led.On(StatusLed::kGreen, 8);
         vTaskDelay(pdMS_TO_TICKS(2000));

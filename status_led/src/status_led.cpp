@@ -29,7 +29,8 @@ const LedColor StatusLed::kBlue(0, 0, 255);
 const LedColor StatusLed::kWhite(255, 255, 255);
 const LedColor StatusLed::kDefaultColor = kBlue;
 
-StatusLed::StatusLed(status_led::LedDevice& ledDevice) : ledDevice_(ledDevice) {
+StatusLed::StatusLed(std::unique_ptr<status_led::LedDevice> ledDevice)
+    : ledDevice_(std::move(ledDevice)) {
     queue_ = xQueueCreate(kQueueSize, sizeof(LedCommand));
 
     // create a task with the "Thread" method
@@ -40,9 +41,6 @@ StatusLed::StatusLed(status_led::LedDevice& ledDevice) : ledDevice_(ledDevice) {
                 uxTaskPriorityGet(nullptr),
                 &task_);
 }
-
-// Overload to allow passing a pointer to the LedDevice for compatibility with C-style APIs
-StatusLed::StatusLed(status_led::LedDevice* ledDevice) : StatusLed(*ledDevice) {}
 
 StatusLed::~StatusLed() {
     vTaskDelete(task_);
@@ -121,12 +119,12 @@ void StatusLed::Task() {
         switch (cmd.cmd) {
             case kOff:
                 ESP_LOGD(kTag, "Switching LED Off");
-                ledDevice_.Off();
+                ledDevice_->Off();
                 delay = portMAX_DELAY;
                 break;
             case kOn:
                 ESP_LOGD(kTag, "Switching LED On");
-                ledDevice_.On(cmd.color >> 16 & 0xff, cmd.color >> 8 & 0xff, cmd.color & 0xff);
+                ledDevice_->On(cmd.color >> 16 & 0xff, cmd.color >> 8 & 0xff, cmd.color & 0xff);
                 delay = portMAX_DELAY;
                 break;
             case kFlash:
@@ -139,7 +137,7 @@ void StatusLed::Task() {
                     is_on = false;
                 }
                 if (is_on) {
-                    ledDevice_.Off();
+                    ledDevice_->Off();
                     is_on = false;
                     cmd.flashCount--;
                     delay = pdMS_TO_TICKS(cmd.timeOffMs);
@@ -149,7 +147,7 @@ void StatusLed::Task() {
                         cmd.flashCount = 0;
                         delay = 0;
                     } else {
-                        ledDevice_.On(
+                        ledDevice_->On(
                             (cmd.color >> 16) & 0xff, (cmd.color >> 8) & 0xff, cmd.color & 0xff);
                         is_on = true;
                         delay = pdMS_TO_TICKS(cmd.timeOnMs);
@@ -162,11 +160,11 @@ void StatusLed::Task() {
                     is_on = false;
                 }
                 if (is_on) {
-                    ledDevice_.Off();
+                    ledDevice_->Off();
                     is_on = false;
                     delay = pdMS_TO_TICKS(cmd.timeOffMs);
                 } else {
-                    ledDevice_.On(
+                    ledDevice_->On(
                         (cmd.color >> 16) & 0xff, (cmd.color >> 8) & 0xff, cmd.color & 0xff);
                     is_on = true;
                     delay = pdMS_TO_TICKS(cmd.timeOnMs);

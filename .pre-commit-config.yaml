@@ -10,13 +10,23 @@ repos:
       - id: check-yaml
         args: [--allow-multiple-documents]
       - id: end-of-file-fixer
+        exclude: ^API\.md$
       - id: trailing-whitespace
+        exclude: ^API\.md$
+
   - repo: https://github.com/pre-commit/mirrors-clang-format
     rev: v17.0.6
     hooks:
       - id: clang-format
+
   - repo: https://github.com/espressif/doxybook
-    rev: v0.2.2
+    rev: v0.3.0
     hooks:
       - id: doxygen-api-md
+        types: [file, c++]
         args: ["-i", "doxygen/xml", "-o", "API.md", "--template-lang", "cpp"]
+
+  - repo: https://codeberg.org/fsfe/reuse-tool
+    rev: v6.2.0
+    hooks:
+      - id: reuse
